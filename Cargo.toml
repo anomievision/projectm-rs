@@ -14,9 +14,10 @@ build = "build.rs"
 
 crate-type = ["cdylib"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+
+# *needed for test_sdl*
+# sdl2 = "0.35.2"
 
 
 [build-dependencies]

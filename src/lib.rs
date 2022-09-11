@@ -12,7 +12,7 @@ pub const projectMEvent_PROJECTM_KEYDOWN: projectMEvent = 1;
 pub const projectMEvent_PROJECTM_VIDEORESIZE: projectMEvent = 2;
 #[doc = " Event types"]
 pub const projectMEvent_PROJECTM_VIDEOQUIT: projectMEvent = 3;
-pub type projectMEvent = ::std::os::raw::c_uint;
+pub type projectMEvent = u32;
 #[doc = " Keycodes"]
 pub const projectMKeycode_PROJECTM_K_RETURN: projectMKeycode = 0;
 #[doc = " Keycodes"]
@@ -207,7 +207,7 @@ pub const projectMKeycode_PROJECTM_K_PLUS: projectMKeycode = 124;
 pub const projectMKeycode_PROJECTM_K_MINUS: projectMKeycode = 125;
 #[doc = " Keycodes"]
 pub const projectMKeycode_PROJECTM_K_EQUALS: projectMKeycode = 126;
-pub type projectMKeycode = ::std::os::raw::c_uint;
+pub type projectMKeycode = u32;
 #[doc = " Modifiers"]
 pub const projectMModifier_PROJECTM_KMOD_NONE: projectMModifier = -1;
 #[doc = " Modifiers"]
@@ -220,7 +220,7 @@ pub const projectMModifier_PROJECTM_KMOD_CAPS: projectMModifier = 2;
 pub const projectMModifier_PROJECTM_KMOD_LCTRL: projectMModifier = 3;
 #[doc = " Modifiers"]
 pub const projectMModifier_PROJECTM_KMOD_RCTRL: projectMModifier = 4;
-pub type projectMModifier = ::std::os::raw::c_int;
+pub type projectMModifier = i32;
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -244,17 +244,17 @@ pub type projectm_handle = *mut projectm;
 #[derive(Debug, Copy, Clone)]
 pub struct projectm_settings_s {
     #[doc = "!< Per-pixel mesh X resolution."]
-    pub mesh_x: ::std::os::raw::c_int,
+    pub mesh_x: i32,
     #[doc = "!< Per-pixel mesh Y resolution."]
-    pub mesh_y: ::std::os::raw::c_int,
+    pub mesh_y: i32,
     #[doc = "!< Target rendering frames per second."]
-    pub fps: ::std::os::raw::c_int,
+    pub fps: i32,
     #[doc = "!< Size of the render texture. Must be a power of 2."]
-    pub texture_size: ::std::os::raw::c_int,
+    pub texture_size: i32,
     #[doc = "!< Width of the rendering viewport."]
-    pub window_width: ::std::os::raw::c_int,
+    pub window_width: i32,
     #[doc = "!< Height of the rendering viewport."]
-    pub window_height: ::std::os::raw::c_int,
+    pub window_height: i32,
     #[doc = "!< Path to a preset playlist in XML format to be loaded. Use FLAG_DISABLE_PLAYLIST_LOAD to skip loading a playlist."]
     pub preset_url: *mut ::std::os::raw::c_char,
     #[doc = "!< Path to the \"title\" font that is used to render the preset name."]
@@ -654,11 +654,11 @@ pub const projectm_flags_PROJECTM_FLAG_NONE: projectm_flags = 0;
 #[doc = "!< Set this flag to disable loading a preset playlist on startup."]
 pub const projectm_flags_PROJECTM_FLAG_DISABLE_PLAYLIST_LOAD: projectm_flags = 1;
 #[doc = " Flags that influence projectM instance creation."]
-pub type projectm_flags = ::std::os::raw::c_uint;
+pub type projectm_flags = u32;
 pub const projectm_channels_PROJECTM_MONO: projectm_channels = 1;
 pub const projectm_channels_PROJECTM_STEREO: projectm_channels = 2;
 #[doc = " For specifying audio data format."]
-pub type projectm_channels = ::std::os::raw::c_uint;
+pub type projectm_channels = u32;
 #[doc = "!< Rating for hard cuts."]
 pub const projectm_preset_rating_type_PROJECTM_HARD_CUT_RATING_TYPE: projectm_preset_rating_type =
     0;
@@ -667,7 +667,7 @@ pub const projectm_preset_rating_type_PROJECTM_SOFT_CUT_RATING_TYPE: projectm_pr
     1;
 #[doc = " Rating types supported by projectM. Used to control preset selection for different types"]
 #[doc = " of transitions (hard/soft)."]
-pub type projectm_preset_rating_type = ::std::os::raw::c_uint;
+pub type projectm_preset_rating_type = u32;
 #[doc = "!< Left audio channel."]
 pub const projectm_pcm_channel_PROJECTM_CHANNEL_L: projectm_pcm_channel = 0;
 #[doc = "!< Left audio channel."]
@@ -677,7 +677,7 @@ pub const projectm_pcm_channel_PROJECTM_CHANNEL_R: projectm_pcm_channel = 1;
 #[doc = "!< Right audio channel."]
 pub const projectm_pcm_channel_PROJECTM_CHANNEL_1: projectm_pcm_channel = 1;
 #[doc = " Placeholder values that can be used to address channel indices in PCM data arrays."]
-pub type projectm_pcm_channel = ::std::os::raw::c_uint;
+pub type projectm_pcm_channel = u32;
 #[doc = "!< Random waveform type."]
 pub const projectm_touch_type_PROJECTM_TOUCH_TYPE_RANDOM: projectm_touch_type = 0;
 #[doc = "!< Draws a circular waveform."]
@@ -697,7 +697,7 @@ pub const projectm_touch_type_PROJECTM_TOUCH_TYPE_LINE: projectm_touch_type = 7;
 #[doc = "!< Draws a double-line waveform."]
 pub const projectm_touch_type_PROJECTM_TOUCH_TYPE_DOUBLE_LINE: projectm_touch_type = 8;
 #[doc = " Waveform render types used in the touch start method."]
-pub type projectm_touch_type = ::std::os::raw::c_uint;
+pub type projectm_touch_type = u32;
 
 pub fn projectm_alloc_string(string: String) -> *const i8 {
     extern "C" {
@@ -706,7 +706,7 @@ pub fn projectm_alloc_string(string: String) -> *const i8 {
         #[doc = " To free the allocated memory, call projectm_free_string(). Do not use free()!"]
         #[doc = ""]
         #[doc = " @return A pointer to a zero-initialized memory area."]
-        pub fn projectm_alloc_string(length: ::std::os::raw::c_uint) -> *mut ::std::os::raw::c_char;
+        pub fn projectm_alloc_string(length: u32) -> *mut ::std::os::raw::c_char;
     }
 
     let len = string.len();
@@ -781,7 +781,7 @@ pub fn projectm_free_settings(settings_: *const projectm_settings) {
 pub type projectm_preset_switched_event = ::std::option::Option<
     unsafe extern "C" fn(
         is_hard_cut: bool,
-        index: ::std::os::raw::c_uint,
+        index: u32,
         user_data: *mut ::std::os::raw::c_void,
     ),
 >;
@@ -805,7 +805,7 @@ pub type projectm_shuffle_enable_changed_event = ::std::option::Option<
 pub type projectm_preset_switch_failed_event = ::std::option::Option<
     unsafe extern "C" fn(
         is_hard_cut: bool,
-        index: ::std::os::raw::c_uint,
+        index: u32,
         message: *const ::std::os::raw::c_char,
         user_data: *mut ::std::os::raw::c_void,
     ),
@@ -821,8 +821,8 @@ pub type projectm_preset_switch_failed_event = ::std::option::Option<
 #[doc = "                  e.g. context information."]
 pub type projectm_preset_rating_changed_event = ::std::option::Option<
     unsafe extern "C" fn(
-        index: ::std::os::raw::c_uint,
-        rating: ::std::os::raw::c_int,
+        index: u32,
+        rating: i32,
         rating_type: projectm_preset_rating_type,
         user_data: *mut ::std::os::raw::c_void,
     ),
@@ -838,7 +838,7 @@ pub fn projectm_create(setting_file_path: String, flags: i32) -> projectm_handle
         #[doc = "         NULL if the instance could not be created successfully."]
         pub fn projectm_create(
             setting_file_path: *const ::std::os::raw::c_char,
-            flags: ::std::os::raw::c_int,
+            flags: i32,
         ) -> projectm_handle;
     }
 
@@ -859,7 +859,7 @@ pub fn projectm_create_settings(settings: *const projectm_settings, flags: i32) 
         #[doc = "         NULL if the instance could not be created successfully."]
         pub fn projectm_create_settings(
             settings: *const projectm_settings,
-            flags: ::std::os::raw::c_int,
+            flags: i32,
         ) -> projectm_handle;
     }
 
@@ -1054,7 +1054,7 @@ pub fn projectm_init_render_to_texture(instance: projectm_handle) -> u32 {
         #[doc = ""]
         #[doc = " @param instance The projectM instance handle."]
         #[doc = " @return A GLuint value with the texture ID projectM will render to."]
-        pub fn projectm_init_render_to_texture(instance: projectm_handle) -> ::std::os::raw::c_uint;
+        pub fn projectm_init_render_to_texture(instance: projectm_handle) -> u32;
     }
 
     return unsafe {
@@ -1114,6 +1114,8 @@ pub fn projectm_default_key_handler(instance: projectm_handle, event: projectMEv
     }
 }
 
+// TODO: STARTED HERE
+
 pub fn projectm_get_texture_size(instance: projectm_handle) -> u32 {
     extern "C" {
         #[doc = " @brief Returns the size of the internal render texture."]
@@ -1127,13 +1129,13 @@ pub fn projectm_get_texture_size(instance: projectm_handle) -> u32 {
     }
 }
 
-pub fn projectm_set_texture_size(instance: projectm_handle, size: u32) {
+pub fn projectm_set_texture_size(instance: projectm_handle, size: usize) {
     extern "C" {
         #[doc = " @brief Changes the size of the internal render texture."]
         #[doc = " @note This will recreate the internal renderer."]
         #[doc = " @param instance The projectM instance handle."]
         #[doc = " @param size The new size of the render texture. Must be a power of 2."]
-        pub fn projectm_set_texture_size(instance: projectm_handle, size: u32);
+        pub fn projectm_set_texture_size(instance: projectm_handle, size: usize);
     }
 
     unsafe {
@@ -1380,7 +1382,7 @@ pub fn projectm_get_fps(instance: projectm_handle) -> u32 {
     }
 }
 
-pub fn projectm_get_preset_path(instance: projectm_handle) -> String {
+pub fn projectm_get_preset_path(instance: projectm_handle) -> str {
     extern "C" {
         #[doc = " @brief Returns the search path for presets and textures."]
         #[doc = " @param instance The projectM instance handle."]
@@ -1392,10 +1394,10 @@ pub fn projectm_get_preset_path(instance: projectm_handle) -> String {
 
     let preset_path_str = unsafe { CStr::from_ptr(preset_path) };
   
-    return preset_path_str.to_str().unwrap().to_string();
+    return preset_path_str.to_str().unwrap();
 }
 
-pub fn projectm_get_title_font_filename(instance: projectm_handle) -> String {
+pub fn projectm_get_title_font_filename(instance: projectm_handle) -> str {
     extern "C" {
         #[doc = " @brief Returns the path and filename of the font used to render the title overlay text."]
         #[doc = " @param instance The projectM instance handle."]
@@ -1409,10 +1411,10 @@ pub fn projectm_get_title_font_filename(instance: projectm_handle) -> String {
 
     let title_font_filename_str = unsafe { CStr::from_ptr(title_font_filename) };
 
-    return title_font_filename_str.to_str().unwrap().to_string();
+    return title_font_filename_str.to_str().unwrap();
 }
 
-pub fn projectm_get_menu_font_filename(instance: projectm_handle) -> String {
+pub fn projectm_get_menu_font_filename(instance: projectm_handle) -> str {
     extern "C" {
         #[doc = " @brief Returns the path and filename of the font used to render the menu overlay text."]
         #[doc = " @param instance The projectM instance handle."]
@@ -1426,10 +1428,10 @@ pub fn projectm_get_menu_font_filename(instance: projectm_handle) -> String {
 
     let menu_font_filename_str = unsafe { CStr::from_ptr(menu_font_filename) };
 
-    return menu_font_filename_str.to_str().unwrap().to_string();
+    return menu_font_filename_str.to_str().unwrap();
 }
 
-pub fn projectm_get_data_dir_path(instance: projectm_handle) -> String {
+pub fn projectm_get_data_dir_path(instance: projectm_handle) -> str {
     extern "C" {
         #[doc = " @brief Returns the path projectM uses to search for additional data."]
         #[doc = " @param instance The projectM instance handle."]
@@ -1441,7 +1443,7 @@ pub fn projectm_get_data_dir_path(instance: projectm_handle) -> String {
 
     let data_dir_path_str = unsafe { CStr::from_ptr(data_dir_path) };
 
-    return data_dir_path_str.to_str().unwrap().to_string();
+    return data_dir_path_str.to_str().unwrap();
 }
 
 pub fn projectm_set_aspect_correction(instance: projectm_handle, enabled: bool) {
@@ -1504,7 +1506,7 @@ pub fn projectm_get_easter_egg(instance: projectm_handle) -> f32 {
     };
 }
 
-pub fn projectm_touch(instance: projectm_handle, x: f32, y: f32, pressure: f32, touch_type: projectm_touch_type) {
+pub fn projectm_touch(instance: projectm_handle, x: f32, y: f32, pressure: i32, touch_type: projectm_touch_type) {
     extern "C" {
         #[doc = " @brief Starts a touch event or moves an existing waveform."]
         #[doc = ""]
@@ -1521,7 +1523,7 @@ pub fn projectm_touch(instance: projectm_handle, x: f32, y: f32, pressure: f32, 
             instance: projectm_handle,
             x: f32,
             y: f32,
-            pressure: f32,
+            pressure: i32,
             touch_type: projectm_touch_type,
         );
     }
@@ -1531,7 +1533,7 @@ pub fn projectm_touch(instance: projectm_handle, x: f32, y: f32, pressure: f32, 
     }
 }
 
-pub fn projectm_touch_drag(instance: projectm_handle, x: f32, y: f32, pressure: f32) {
+pub fn projectm_touch_drag(instance: projectm_handle, x: f32, y: f32, pressure: i32) {
     extern "C" {
         #[doc = " @brief Centers any waveforms under the coordinates to simulate dragging."]
         #[doc = " @param instance The projectM instance handle."]
@@ -1542,7 +1544,7 @@ pub fn projectm_touch_drag(instance: projectm_handle, x: f32, y: f32, pressure: 
             instance: projectm_handle,
             x: f32,
             y: f32,
-            pressure: f32,
+            pressure: i32,
         );
     }
 
@@ -1671,7 +1673,7 @@ pub fn projectm_select_preset_position(instance: projectm_handle, index: u32) {
         #[doc = " @param index The preset index to select."]
         pub fn projectm_select_preset_position(
             instance: projectm_handle,
-            index: ::std::os::raw::c_uint,
+            index: u32,
         );
     }
 
@@ -1688,7 +1690,7 @@ pub fn projectm_select_preset(instance: projectm_handle, index: u32, hard_cut: b
         #[doc = " @param hard_cut If true, a hard cut is made, otherwise it will be blended smoothly."]
         pub fn projectm_select_preset(
             instance: projectm_handle,
-            index: ::std::os::raw::c_uint,
+            index: u32,
             hard_cut: bool,
         );
     }
@@ -1715,7 +1717,7 @@ pub fn projectm_remove_preset(instance: projectm_handle, index: u32) {
         #[doc = " @brief Removes a preset from the playlist."]
         #[doc = " @param instance The projectM instance handle."]
         #[doc = " @param index The  preset index to remove from the playlist."]
-        pub fn projectm_remove_preset(instance: projectm_handle, index: ::std::os::raw::c_uint);
+        pub fn projectm_remove_preset(instance: projectm_handle, index: u32);
     }
 
     unsafe {
@@ -1795,7 +1797,7 @@ pub fn projectm_get_preset_index(instance: projectm_handle, preset_name: String)
         pub fn projectm_get_preset_index(
             instance: projectm_handle,
             preset_name: *const ::std::os::raw::c_char,
-        ) -> ::std::os::raw::c_uint;
+        ) -> u32;
     }
 
     let preset_name_str = CString::new(preset_name).expect("CString::new failed");
@@ -1875,7 +1877,7 @@ pub fn projectm_get_selected_preset_index(instance: projectm_handle, index: *mut
         #[doc = " @return True if a preset idnex was returned, false if no preset was selected, e.g. the playlist is empty."]
         pub fn projectm_get_selected_preset_index(
             instance: projectm_handle,
-            index: *mut ::std::os::raw::c_uint,
+            index: *mut u32,
         ) -> bool;
     }
 
@@ -1900,8 +1902,8 @@ pub fn projectm_add_preset_url(instance: projectm_handle, preset_url: String, pr
             instance: projectm_handle,
             preset_url: *const ::std::os::raw::c_char,
             preset_name: *const ::std::os::raw::c_char,
-            rating_list: *mut ::std::os::raw::c_int,
-            rating_list_length: ::std::os::raw::c_uint,
+            rating_list: *mut i32,
+            rating_list_length: u32,
         );
     }
 
@@ -1928,11 +1930,11 @@ pub fn projectm_insert_preset_url(instance: projectm_handle, index: u32, preset_
         #[doc = " @param rating_list_length Length of the preset rating list."]
         pub fn projectm_insert_preset_url(
             instance: projectm_handle,
-            index: ::std::os::raw::c_uint,
+            index: u32,
             preset_url: *const ::std::os::raw::c_char,
             preset_name: *const ::std::os::raw::c_char,
-            rating_list: *mut ::std::os::raw::c_int,
-            rating_list_length: ::std::os::raw::c_uint,
+            rating_list: *mut i32,
+            rating_list_length: u32,
         );
     }
 
@@ -1970,7 +1972,7 @@ pub fn projectm_get_preset_filename(instance: projectm_handle, index: u32) -> St
         #[doc = " @return The full path and filename of the preset at the given index."]
         pub fn projectm_get_preset_filename(
             instance: projectm_handle,
-            index: ::std::os::raw::c_uint,
+            index: u32,
         ) -> *const ::std::os::raw::c_char;
     }
 
@@ -1990,7 +1992,7 @@ pub fn projectm_get_preset_name(instance: projectm_handle, index: u32) -> String
         #[doc = " @return The display name of the preset at the given index."]
         pub fn projectm_get_preset_name(
             instance: projectm_handle,
-            index: ::std::os::raw::c_uint,
+            index: u32,
         ) -> *const ::std::os::raw::c_char;
     }
 
@@ -2009,7 +2011,7 @@ pub fn projectm_set_preset_name(instance: projectm_handle, index: u32, name: Str
         #[doc = " @param name The new display name."]
         pub fn projectm_set_preset_name(
             instance: projectm_handle,
-            index: ::std::os::raw::c_uint,
+            index: u32,
             name: *const ::std::os::raw::c_char,
         );
     }
@@ -2065,7 +2067,7 @@ pub fn projectm_get_playlist_size(instance: projectm_handle) -> u32 {
         #[doc = " @brief Returns the number of presets in the current playlist."]
         #[doc = " @param instance The projectM instance handle."]
         #[doc = " @return The number of presets in the currently loaded playlist."]
-        pub fn projectm_get_playlist_size(instance: projectm_handle) -> ::std::os::raw::c_uint;
+        pub fn projectm_get_playlist_size(instance: projectm_handle) -> u32;
     }
 
     return unsafe { 
@@ -2107,7 +2109,7 @@ pub fn projectm_get_search_index(instance: projectm_handle, name: String) -> u32
         pub fn projectm_get_search_index(
             instance: projectm_handle,
             name: *const ::std::os::raw::c_char,
-        ) -> ::std::os::raw::c_uint;
+        ) -> u32;
     }
 
     let name_str = CString::new(name).expect("CString::new failed");
@@ -2328,7 +2330,7 @@ pub fn projectm_pcm_get_max_samples() -> u32 {
         #[doc = " are added, only this number of samples is stored and the remainder discarded."]
         #[doc = ""]
         #[doc = " @return The number of audio samples that are stored, per channel."]
-        pub fn projectm_pcm_get_max_samples() -> ::std::os::raw::c_uint;
+        pub fn projectm_pcm_get_max_samples() -> u32;
     }
 
     return unsafe {
@@ -2354,7 +2356,7 @@ pub fn projectm_pcm_add_float(instance: projectm_handle, samples: *const f32, co
         pub fn projectm_pcm_add_float(
             instance: projectm_handle,
             samples: *const f32,
-            count: ::std::os::raw::c_uint,
+            count: u32,
             channels: projectm_channels,
         );
     }
@@ -2381,7 +2383,7 @@ pub fn projectm_pcm_add_int16(instance: projectm_handle, samples: *const i16, co
         pub fn projectm_pcm_add_int16(
             instance: projectm_handle,
             samples: *const i16,
-            count: ::std::os::raw::c_uint,
+            count: u32,
             channels: projectm_channels,
         );
     }
@@ -2408,7 +2410,7 @@ pub fn projectm_pcm_add_uint8(instance: projectm_handle, samples: *const u8, cou
         pub fn projectm_pcm_add_uint8(
             instance: projectm_handle,
             samples: *const u8,
-            count: ::std::os::raw::c_uint,
+            count: u32,
             channels: projectm_channels,
         );
     }
