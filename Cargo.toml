@@ -15,11 +15,7 @@ build = "build.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
+projectm-sys = { version = "0.1.0" }
 
 # *needed for test_sdl*
 # sdl2 = "0.35.2"
-
-
-[build-dependencies]
-# bindgen = "0.60.1"
-cmake = "0.1.48"
