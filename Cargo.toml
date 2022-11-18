@@ -10,12 +10,13 @@ repository = "https://github.com/projectM-visualizer/projectm-rs" #https://githu
 keywords = ["visualization", "audio", "sound",  "projectm"]
 categories = ["multimedia", "multimedia::video", "multimedia::audio"]
 readme = "README.md"
-build = "build.rs"
-
-crate-type = ["cdylib"]
 
 [dependencies]
-projectm-sys = { version = "0.1.0" }
+libc = "0.2.132"
+projectm-sys = { version = "0.1.1", path = "/home/avdev/AnomieVision/projectm-sys" }
 
 # *needed for test_sdl*
 # sdl2 = "0.35.2"
+
+[[example]]
+name = "sdl"
