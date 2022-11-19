@@ -16,7 +16,7 @@ libc = "0.2.132"
 projectm-sys = { version = "0.1.1", path = "/home/avdev/AnomieVision/projectm-sys" }
 
 # *needed for test_sdl*
-# sdl2 = "0.35.2"
+sdl2 = "0.35.2"
 
 [[example]]
 name = "sdl"
