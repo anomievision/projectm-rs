@@ -48,27 +48,6 @@ fn main() -> Result<(), String> {
     projectm::select_random_preset(projectm_handle, true);
     println!("ProjectM -> Initialized");
 
-    // Tests
-    // test_get_settings(projectm_handle);
-    // test_write_config(projectm_handle);
-    // test_get_and_set_texture_size(projectm_handle);
-    // test_get_and_set_beat_sensitivity(projectm_handle);
-    // test_get_and_set_hard_cut_duration(projectm_handle);
-    // test_get_and_set_hard_cut_enabled(projectm_handle);
-    // test_get_and_set_hard_cut_sensitivity(projectm_handle);
-    // test_get_and_set_soft_cut_duration(projectm_handle);
-    // test_get_and_set_preset_duration(projectm_handle);
-    // test_get_and_set_mesh_x(projectm_handle);
-    // test_get_and_set_mesh_y(projectm_handle);
-    // test_get_and_set_mesh_size(projectm_handle);
-    // test_get_and_set_fps(projectm_handle);
-    // test_get_paths(projectm_handle);
-    // test_get_and_set_aspect_correction(projectm_handle);
-    // test_get_and_set_easter_egg(projectm_handle);
-    // test_get_and_set_window_size(projectm_handle);
-    // test_write_debug_image_on_next_frame(projectm_handle);
-
-
     // events
     let mut event_pump = sdl_context.event_pump()?;
 
@@ -80,6 +59,26 @@ fn main() -> Result<(), String> {
                 Event::Quit {..} |
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
                     break 'running;
+                },
+                Event::KeyDown { keycode: Some(Keycode::Space), .. } => {
+                    // Tests
+                    // test_destroy(projectm_handle); //working
+                    test_get_settings(projectm_handle); //not working
+                    // test_write_config(projectm_handle); //not working
+                    // test_get_and_set_texture_size(projectm_handle); //not working
+                    // test_get_and_set_beat_sensitivity(projectm_handle); //working
+                    // test_get_and_set_hard_cut_duration(projectm_handle); //working
+                    // test_get_and_set_hard_cut_enabled(projectm_handle); //working
+                    // test_get_and_set_hard_cut_sensitivity(projectm_handle); //working
+                    // test_get_and_set_soft_cut_duration(projectm_handle); //working
+                    // test_get_and_set_preset_duration(projectm_handle); //partial
+                    // test_get_and_set_mesh_size(projectm_handle); //not working
+                    // test_get_and_set_fps(projectm_handle); //partial
+                    // test_get_paths(projectm_handle); //working
+                    // test_get_and_set_aspect_correction(projectm_handle); //working
+                    // test_get_and_set_easter_egg(projectm_handle); //working
+                    // test_get_and_set_window_size(projectm_handle); //working
+                    // test_write_debug_image_on_next_frame(projectm_handle); //working
                 },
                 _ => {}
             }
@@ -101,16 +100,16 @@ fn main() -> Result<(), String> {
 
 fn generate_random_audio_data(projectm_handle: projectm_handle)
 {
-    let mut pcm_data: [[libc::c_short; 512]; 2] = [[0; 512]; 2];
-    let mut i: libc::c_int = 0 as libc::c_int;
-    while i < 512 as libc::c_int {
-        if i % 2 as libc::c_int == 1 as libc::c_int {
-            pcm_data[0 as libc::c_int as usize][i as usize] =
-                -(pcm_data[0 as libc::c_int as usize][i as usize] as
-                      libc::c_int) as libc::c_short;
-            pcm_data[1 as libc::c_int as usize][i as usize] =
-                -(pcm_data[1 as libc::c_int as usize][i as usize] as
-                      libc::c_int) as libc::c_short
+    let mut pcm_data: [[i16; 512]; 2] = [[0; 512]; 2];
+    let mut i: i32 = 0;
+    while i < 512 {
+        if i % 2 == 1 {
+            pcm_data[0 as usize][i as usize] =
+                -(pcm_data[0 as usize][i as usize] as
+                      i32) as i16;
+            pcm_data[1 as usize][i as usize] =
+                -(pcm_data[1 as usize][i as usize] as
+                      i32) as i16
         }
         i += 1
     };
@@ -127,19 +126,20 @@ fn test_destroy(projectm_handle: projectm_handle) {
 
 fn test_get_settings(projectm_handle: projectm_handle) {
     println!("Test -> get_settings");
+    // projectm::get_settings(projectm_handle);
     println!("{:?}", projectm::get_settings(projectm_handle));
 
     // !TODO Figure out how to convert the pointer to useable struct
 }
 
-fn test_write_config(projectm_handle: projectm_handle) {
-    println!("Test -> write_config");
+// fn test_write_config(projectm_handle: projectm_handle) {
+//     println!("Test -> write_config");
 
-    let config_file = String::from("./test.config");
-    let settings = projectm::get_settings(projectm_handle);
+//     let config_file = String::from("test.config");
+//     let settings = projectm::get_settings(projectm_handle);
 
-    projectm::write_config(config_file, settings);
-}
+//     projectm::write_config(config_file, settings);
+// }
 
 fn test_get_and_set_texture_size(projectm_handle: projectm_handle) {
     println!("Test -> get_texture_size");
@@ -147,7 +147,7 @@ fn test_get_and_set_texture_size(projectm_handle: projectm_handle) {
 
     println!("Test -> set_texture_size");
     projectm::set_texture_size(projectm_handle, 256);
-    println!("--texture-size: {}", projectm::get_texture_size(projectm_handle));
+    // println!("--texture-size: {}", projectm::get_texture_size(projectm_handle));
 }
 
 fn test_get_and_set_beat_sensitivity(projectm_handle: projectm_handle) {
@@ -227,7 +227,8 @@ fn test_get_paths(projectm_handle: projectm_handle) {
     println!("--preset_path: {}", projectm::get_preset_path(projectm_handle));
 
     println!("Test -> get_texture_path");
-    println!("--texture_path: {}", projectm::get_texture_path(projectm_handle));
+    let texture_path = projectm::get_texture_path(projectm_handle);
+    println!("--texture_path: {}", texture_path);
 
     println!("Test -> get_data_path");
     println!("--data_path: {}", projectm::get_data_path(projectm_handle));
