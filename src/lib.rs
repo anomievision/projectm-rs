@@ -41,13 +41,15 @@ extern crate libc;
 extern crate projectm_sys as ffi;
 
 use std::ffi::CStr;
-use libc::{c_int};
+use ffi::projectm_settings;
+use libc::{c_int, strncpy};
 
 
 pub enum projectm {}
 pub type projectm_handle = *mut ffi::projectm;
 
 #[repr(C)]
+#[derive(Debug)]
 pub struct Settings {
     pub mesh_x: u32,
     pub mesh_y: u32,
@@ -81,9 +83,9 @@ impl projectm {
             texture_size: settings.texture_size as c_int,
             window_width: settings.window_width as c_int,
             window_height: settings.window_height as c_int,
-            preset_path: settings.preset_path.as_bytes().as_ptr() as *mut i8,
-            texture_path: settings.texture_path.as_bytes().as_ptr() as *mut i8,
-            data_path: settings.data_path.as_bytes().as_ptr() as *mut i8,
+            preset_path: unsafe { ffi::projectm_alloc_string((settings.preset_path.len() + 1).try_into().unwrap()) },
+            texture_path: unsafe { ffi::projectm_alloc_string((settings.texture_path.len() + 1).try_into().unwrap()) },
+            data_path: unsafe { ffi::projectm_alloc_string((settings.data_path.len() + 1).try_into().unwrap()) },
             preset_duration: settings.preset_duration,
             soft_cut_duration: settings.soft_cut_duration,
             hard_cut_duration: settings.hard_cut_duration,
@@ -96,6 +98,12 @@ impl projectm {
             soft_cut_ratings_enabled: settings.soft_cut_ratings_enabled,
         };
 
+        unsafe {
+            strncpy(projectm_settings.preset_path, settings.preset_path.as_bytes().as_ptr() as *mut i8, settings.preset_path.len());
+            strncpy(projectm_settings.texture_path, settings.texture_path.as_bytes().as_ptr() as *mut i8, settings.texture_path.len());
+            strncpy(projectm_settings.data_path, settings.data_path.as_bytes().as_ptr() as *mut i8, settings.data_path.len());
+        }
+        
 
         return unsafe { ffi::projectm_create_settings(&projectm_settings, flags) };
     }
@@ -108,13 +116,102 @@ impl projectm {
         unsafe { ffi::projectm_destroy(instance) };
     }
 
-    pub fn get_settings(instance: projectm_handle) -> *mut ffi::projectm_settings {
-        return unsafe { ffi::projectm_get_settings(instance) };
+    pub fn get_settings(instance: projectm_handle) -> Settings {
+        let projectm_settings_buf = unsafe { ffi::projectm_get_settings(instance) };
+        let projectm_settings_ref = unsafe{ projectm_settings_buf.as_ref().unwrap() };
+        
+        pub fn get_preset_path(instance: projectm_handle) -> String {
+            let preset_path_buf = unsafe { ffi::projectm_get_preset_path(instance) };
+            let preset_path_str = unsafe { CStr::from_ptr(preset_path_buf) };
+            let preset_path_str_slice = preset_path_str.to_str().unwrap();
+            let preset_path = preset_path_str_slice.to_owned();
+    
+            unsafe { ffi::projectm_free_string(preset_path_buf) };
+    
+            return preset_path;
+        }
+    
+        pub fn get_texture_path(instance: projectm_handle) -> String {
+            let texture_path_buf = unsafe { ffi::projectm_get_texture_path(instance) };
+            let texture_path_str = unsafe { CStr::from_ptr(texture_path_buf) };
+            let texture_path_str_slice = texture_path_str.to_str().unwrap();
+            let texture_path = texture_path_str_slice.to_owned();
+    
+            unsafe { ffi::projectm_free_string(texture_path_buf) };
+    
+            return texture_path;
+        }
+    
+        pub fn get_data_path(instance: projectm_handle) -> String {
+            let data_path_buf = unsafe { ffi::projectm_get_data_path(instance) };
+            let data_path_str = unsafe { CStr::from_ptr(data_path_buf) };
+            let data_path_str_slice = data_path_str.to_str().unwrap();
+            let data_path = data_path_str_slice.to_owned();
+    
+            unsafe { ffi::projectm_free_string(data_path_buf) };
+    
+            return data_path;
+        }
+
+        let projectm_settings = Settings {
+            mesh_x: projectm_settings_ref.mesh_x as u32,
+            mesh_y: projectm_settings_ref.mesh_y as u32,
+            fps: projectm_settings_ref.fps as u32,
+            texture_size: projectm_settings_ref.texture_size as u32,
+            window_width: projectm_settings_ref.window_width as u32,
+            window_height: projectm_settings_ref.window_height as u32,
+            preset_path: get_preset_path(instance),
+            texture_path: get_texture_path(instance),
+            data_path: get_data_path(instance),
+            preset_duration: projectm_settings_ref.preset_duration,
+            soft_cut_duration: projectm_settings_ref.soft_cut_duration,
+            hard_cut_duration: projectm_settings_ref.hard_cut_duration,
+            hard_cut_enabled: projectm_settings_ref.hard_cut_enabled,
+            hard_cut_sensitivity: projectm_settings_ref.hard_cut_sensitivity,
+            beat_sensitivity: projectm_settings_ref.beat_sensitivity,
+            aspect_correction: projectm_settings_ref.aspect_correction,
+            easter_egg: projectm_settings_ref.easter_egg,
+            shuffle_enabled: projectm_settings_ref.shuffle_enabled,
+            soft_cut_ratings_enabled: projectm_settings_ref.soft_cut_ratings_enabled,
+        };
+
+        // println!("{:?}", projectm_settings);
+        
+        return projectm_settings;
     }
 
-    pub fn write_config(config_file: String, settings: *const ffi::projectm_settings) {
-        unsafe { ffi::projectm_write_config(config_file.as_bytes().as_ptr() as *mut i8, settings) };
-    }
+    // pub fn write_config(config_file: String, settings: Settings) {
+    //     let projectm_settings = ffi::projectm_settings {
+    //         mesh_x: settings.mesh_x as c_int,
+    //         mesh_y: settings.mesh_y as c_int,
+    //         fps: settings.fps as c_int,
+    //         texture_size: settings.texture_size as c_int,
+    //         window_width: settings.window_width as c_int,
+    //         window_height: settings.window_height as c_int,
+    //         preset_path: unsafe { ffi::projectm_alloc_string((settings.preset_path.len() + 1).try_into().unwrap()) },
+    //         texture_path: unsafe { ffi::projectm_alloc_string((settings.texture_path.len() + 1).try_into().unwrap()) },
+    //         data_path: unsafe { ffi::projectm_alloc_string((settings.data_path.len() + 1).try_into().unwrap()) },
+    //         preset_duration: settings.preset_duration,
+    //         soft_cut_duration: settings.soft_cut_duration,
+    //         hard_cut_duration: settings.hard_cut_duration,
+    //         hard_cut_enabled: settings.hard_cut_enabled,
+    //         hard_cut_sensitivity: settings.hard_cut_sensitivity,
+    //         beat_sensitivity: settings.beat_sensitivity,
+    //         aspect_correction: settings.aspect_correction,
+    //         easter_egg: settings.easter_egg,
+    //         shuffle_enabled: settings.shuffle_enabled,
+    //         soft_cut_ratings_enabled: settings.soft_cut_ratings_enabled,
+    //     };
+
+    //     unsafe {
+    //         strncpy(projectm_settings.preset_path, settings.preset_path.as_bytes().as_ptr() as *mut i8, settings.preset_path.len());
+    //         strncpy(projectm_settings.texture_path, settings.texture_path.as_bytes().as_ptr() as *mut i8, settings.texture_path.len());
+    //         strncpy(projectm_settings.data_path, settings.data_path.as_bytes().as_ptr() as *mut i8, settings.data_path.len());
+    //     }
+
+    //     let projectm_settings_ptr 
+    //     unsafe { ffi::projectm_write_config(config_file.as_bytes().as_ptr() as *mut i8, projectm_settings) };
+    // }
 
     // -----------------
 
@@ -216,27 +313,36 @@ impl projectm {
     // }
 
     pub fn get_preset_path(instance: projectm_handle) -> String {
-        let preset_path = unsafe { ffi::projectm_get_preset_path(instance) };
-    
-        let preset_path_str = unsafe { CStr::from_ptr(preset_path) };
-    
-        return preset_path_str.to_str().unwrap().to_string();
+        let preset_path_buf = unsafe { ffi::projectm_get_preset_path(instance) };
+        let preset_path_str = unsafe { CStr::from_ptr(preset_path_buf) };
+        let preset_path_str_slice = preset_path_str.to_str().unwrap();
+        let preset_path = preset_path_str_slice.to_owned();
+
+        unsafe { ffi::projectm_free_string(preset_path_buf) };
+
+        return preset_path;
     }
 
     pub fn get_texture_path(instance: projectm_handle) -> String {
-        let texture_path = unsafe { ffi::projectm_get_texture_path(instance) };
-    
-        let texture_path_str = unsafe { CStr::from_ptr(texture_path) };
-    
-        return texture_path_str.to_str().unwrap().to_string();
+        let texture_path_buf = unsafe { ffi::projectm_get_texture_path(instance) };
+        let texture_path_str = unsafe { CStr::from_ptr(texture_path_buf) };
+        let texture_path_str_slice = texture_path_str.to_str().unwrap();
+        let texture_path = texture_path_str_slice.to_owned();
+
+        unsafe { ffi::projectm_free_string(texture_path_buf) };
+
+        return texture_path;
     }
 
     pub fn get_data_path(instance: projectm_handle) -> String {
-        let data_path = unsafe { ffi::projectm_get_data_path(instance) };
-    
-        let data_path_str = unsafe { CStr::from_ptr(data_path) };
-    
-        return data_path_str.to_str().unwrap().to_string();
+        let data_path_buf = unsafe { ffi::projectm_get_data_path(instance) };
+        let data_path_str = unsafe { CStr::from_ptr(data_path_buf) };
+        let data_path_str_slice = data_path_str.to_str().unwrap();
+        let data_path = data_path_str_slice.to_owned();
+
+        unsafe { ffi::projectm_free_string(data_path_buf) };
+
+        return data_path;
     }
 
     pub fn get_aspect_correction(instance: projectm_handle) -> bool {
